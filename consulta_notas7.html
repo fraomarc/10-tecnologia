@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Notas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #nombre, #promedio, #trimestral, #notaFinal {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Consulta de Notas por Cédula - Tecnología de la Información</h1>
+    <p>Ingrese la cédula de su hijo:</p>
+    <input type="text" id="cedula" placeholder="Cédula">
+    <button onclick="buscarNotas()">Buscar</button>
+
+    <h2 id="nombre"></h2>
+    <table id="notas">
+        <thead>
+            <tr>
+                <th>Inst y Config</th>
+                <th>Reg Tabla</th>
+                <th>Respaldo</th>
+                <th>Lab 4 Borrar</th>
+                <th>Lab 5 Insertar</th>
+                <th>Lab 6 Actualizar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="notas-fila"></tr>
+        </tbody>
+    </table>
+    <p id="promedio"></p>
+    <p id="trimestral"></p>
+    <p id="apreciacion"></p>
+    <p id="notaFinal"></p>
+
+    <script>
+        const estudiantes = [
+            { cedula: '8-1073-1099', nombre: 'ALONSO TORRES ERIKA YISSEL', notas: [4.5, 5.0, 2.0, 4.0, 3.5, 4.5], apreciacion: 4.5, trimestral: 2.0 },
+            // ... (otros estudiantes)
+        ];
+
+        function truncar(numero) {
+            return Math.floor(numero * 10) / 10; // Trunca a un decimal
+        }
+
+        function buscarNotas() {
+            const cedula = document.getElementById("cedula").value.trim();
+            if (cedula === '') {
+                alert("Por favor, ingrese una cédula válida.");
+                return;
+            }
+            const estudiante = estudiantes.find(est => est.cedula === cedula);
+
+            if (estudiante) {
+                document.getElementById("nombre").innerText = estudiante.nombre;
+
+                const notasFila = document.getElementById("notas-fila");
+                notasFila.innerHTML = ''; // Limpiar la fila antes de agregar nuevas celdas
+
+                estudiante.notas.forEach(nota => {
+                    const cellNota = document.createElement('td');
+                    cellNota.textContent = truncar(nota).toFixed(1); // Truncar y mostrar con un decimal
+                    notasFila.appendChild(cellNota);
+                });
+
+                const promedio = estudiante.notas.reduce((a, b) => a + b, 0) / estudiante.notas.length;
+                document.getElementById("promedio").innerText = `Promedio: ${truncar(promedio).toFixed(1)}`; // Promedio truncado con un decimal
+
+                const apreciacion = estudiante.apreciacion;
+                document.getElementById("apreciacion").innerText = `Nota de Apreciación: ${truncar(apreciacion).toFixed(1)}`;
+
+                const trimestral = estudiante.trimestral; // Nota trimestral
+                document.getElementById("trimestral").innerText = `Trimestral: ${truncar(trimestral).toFixed(1)}`; // Trimestral truncado a un decimal
+
+                // Calcular la nota final truncada
+                const notaFinal = truncar((promedio + apreciacion + trimestral) / 3);
+                document.getElementById("notaFinal").innerText = `Nota Final: ${notaFinal.toFixed(1)}`; // Nota final truncada a un decimal
+            } else {
+                document.getElementById("nombre").innerText = "Estudiante no encontrado";
+                document.getElementById("notas-fila").innerHTML = '';
+                document.getElementById("promedio").innerText = '';
+                document.getElementById("trimestral").innerText = '';
+                document.getElementById("apreciacion").innerText = '';
+                document.getElementById("notaFinal").innerText = '';
+            }
+        }
+    </script>
+</body>
+</html>
